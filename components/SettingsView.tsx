@@ -49,8 +49,8 @@ const SettingsView: React.FC = () => {
                                 key={lang.id}
                                 onClick={() => changeLanguage(lang.id)}
                                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${i18n.language.startsWith(lang.id)
-                                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                                        : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-750'
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                                    : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-750'
                                     }`}
                             >
                                 {lang.label}

@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { LayoutDashboard, Users, Kanban, FileText, Landmark, Settings, Plus, Search, Bell, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Users, Kanban, FileText, Landmark, Settings, Plus, Search, Bell, Sparkles, Package } from 'lucide-react';
 import { ClientType, DealStatus } from './types';
 
 export const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   { id: 'clients', label: 'Clients', icon: <Users size={20} /> },
   { id: 'pipeline', label: 'Pipeline', icon: <Kanban size={20} /> },
+  { id: 'inventory', label: 'Inventory', icon: <Package size={20} /> },
   { id: 'proposals', label: 'Proposals', icon: <FileText size={20} /> },
   { id: 'finance', label: 'Finance', icon: <Landmark size={20} /> },
   { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },

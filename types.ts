@@ -22,6 +22,15 @@ export interface Client {
   name: string;
   type: ClientType;
   email: string;
+  taxId?: string; // CPF or CNPJ
+  stateRegistration?: string; // Inscrição Estadual
+  cep?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
   tags: string[];
   customFields: CustomField[];
   createdAt: string;
@@ -57,10 +66,17 @@ export interface Proposal {
 
 export interface Product {
   id: string;
+  code: string;
   name: string;
+  description: string;
+  category: string;
   price: number;
-  cost: number;
-  type: 'Service' | 'Product' | 'Subscription';
+  manufacturer: string;
+}
+
+export interface ProductCategory {
+  id: string;
+  name: string;
 }
 
 export interface Commission {
@@ -71,4 +87,4 @@ export interface Commission {
   percentage: number;
 }
 
-export type AppView = 'dashboard' | 'clients' | 'pipeline' | 'proposals' | 'finance' | 'settings';
+export type AppView = 'dashboard' | 'clients' | 'pipeline' | 'proposals' | 'finance' | 'settings' | 'inventory';

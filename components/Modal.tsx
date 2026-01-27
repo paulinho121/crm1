@@ -8,25 +8,26 @@ interface ModalProps {
     onClose: () => void;
     title: string;
     children: React.ReactNode;
+    maxWidth?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) => {
     return (
         <AnimatePresence>
             {isOpen && (
-                <>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto no-scrollbar">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
                     />
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl z-[101] overflow-hidden"
+                        className={`relative w-full ${maxWidth} bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl z-[101] my-auto`}
                     >
                         <div className="flex items-center justify-between p-6 border-b border-zinc-800 bg-zinc-900/50">
                             <h3 className="text-xl font-bold">{title}</h3>
@@ -41,7 +42,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                             {children}
                         </div>
                     </motion.div>
-                </>
+                </div>
             )}
         </AnimatePresence>
     );

@@ -2,9 +2,11 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../store';
+import { useTranslation } from 'react-i18next';
 import { TrendingUp, Users, Target, Zap, Sparkles } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const { clients, deals } = useStore();
   const totalValue = deals.reduce((acc, d) => acc + d.value, 0);
   const avgProbability = Math.round(deals.reduce((acc, d) => acc + d.probability, 0) / deals.length) || 0;
@@ -34,10 +36,10 @@ const Dashboard: React.FC = () => {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Revenue" value={`$${totalValue.toLocaleString()}`} icon={<TrendingUp size={20} />} color="bg-indigo-500" trend="+12.5%" />
-        <StatCard title="Active Clients" value={clients.length} icon={<Users size={20} />} color="bg-blue-500" trend="+4" />
-        <StatCard title="Win Rate" value={`${avgProbability}%`} icon={<Target size={20} />} color="bg-amber-500" trend="+2.1%" />
-        <StatCard title="Quick Deals" value="8" icon={<Zap size={20} />} color="bg-purple-500" trend="+15%" />
+        <StatCard title={t('total_revenue')} value={`$${totalValue.toLocaleString()}`} icon={<TrendingUp size={20} />} color="bg-indigo-500" trend="+12.5%" />
+        <StatCard title={t('active_clients')} value={clients.length} icon={<Users size={20} />} color="bg-blue-500" trend="+4" />
+        <StatCard title={t('win_rate')} value={`${avgProbability}%`} icon={<Target size={20} />} color="bg-amber-500" trend="+2.1%" />
+        <StatCard title={t('quick_deals')} value="8" icon={<Zap size={20} />} color="bg-purple-500" trend="+15%" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -70,7 +72,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
-          <h3 className="text-lg font-semibold mb-6">Recent Activities</h3>
+          <h3 className="text-lg font-semibold mb-6">{t('recent_activities')}</h3>
           <div className="space-y-6">
             {deals.slice(0, 4).map((deal, idx) => (
               <div key={idx} className="flex items-center gap-4 group cursor-pointer">
@@ -95,6 +97,7 @@ const Dashboard: React.FC = () => {
 };
 
 const AIInsightsSection = ({ clients, deals }: any) => {
+  const { t } = useTranslation();
   const [insights, setInsights] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -119,7 +122,7 @@ const AIInsightsSection = ({ clients, deals }: any) => {
         <div className="p-2 bg-indigo-500 rounded-lg shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
           <Sparkles className="text-white" size={18} />
         </div>
-        <h3 className="text-lg font-bold">Nexus AI Insights</h3>
+        <h3 className="text-lg font-bold">{t('ai_insights')}</h3>
         {loading && <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>}
       </div>
 
