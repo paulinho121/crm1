@@ -8,11 +8,11 @@ const Sidebar: React.FC = () => {
   const { t } = useTranslation();
   return (
     <aside className="w-64 h-full border-r border-zinc-800 bg-zinc-950/50 backdrop-blur-xl flex flex-col">
-      <div className="p-6 flex items-center gap-3">
-        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <Sparkles className="text-white" size={18} />
+      <div className="p-6 flex flex-col items-center gap-2">
+        <div className="w-16 h-12 flex items-center justify-center">
+          <img src="/logo.png" alt="MCI Logo" className="w-full h-full object-contain" />
         </div>
-        <span className="text-xl font-bold tracking-tight">Nexus CRM</span>
+        <span className="text-xs font-bold tracking-[0.3em] text-zinc-500 uppercase">CRM</span>
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-1">

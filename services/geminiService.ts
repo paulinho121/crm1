@@ -10,7 +10,7 @@ export async function generateProposalDraft(dealTitle: string, clientName: strin
   try {
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const prompt = `
-      Act as a professional sales executive for Nexus CRM. 
+      Act as a professional sales executive for MCI CRM. 
       Create a compelling and sophisticated sales proposal draft with the following details:
       Client: ${clientName}
       Project/Deal: ${dealTitle}

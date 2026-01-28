@@ -41,9 +41,14 @@ const App: React.FC = () => {
     return (
       <div className="h-screen bg-zinc-950 flex flex-col items-center justify-center gap-6">
         <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <div className="space-y-2 text-center">
-          <h2 className="text-xl font-bold tracking-tight">Nexus CRM</h2>
-          <p className="text-sm text-zinc-500 animate-pulse">Syncing with Supabase...</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-24 h-16 flex items-center justify-center">
+            <img src="/logo.png" alt="MCI Logo" className="w-full h-full object-contain" />
+          </div>
+          <div className="space-y-1 text-center">
+            <h2 className="text-xs font-bold tracking-[0.4em] text-zinc-500 uppercase">CRM</h2>
+            <p className="text-[10px] text-zinc-600 animate-pulse uppercase tracking-widest">Iniciando sistema...</p>
+          </div>
         </div>
       </div>
     );

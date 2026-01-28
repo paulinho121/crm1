@@ -5,25 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { FileText, Wand2, Send, Clock, Eye } from 'lucide-react';
 import { generateProposalDraft } from '../services/geminiService';
 
+import CommercialProposalTemplate from './CommercialProposalTemplate';
+
 const ProposalView: React.FC = () => {
   const { t } = useTranslation();
   const { deals, clients } = useStore();
   const [selectedDealId, setSelectedDealId] = useState('');
   const [drafting, setDrafting] = useState(false);
-  const [proposalContent, setProposalContent] = useState('');
 
-  const handleGenerate = async () => {
-    if (!selectedDealId) return;
-    setDrafting(true);
-    const deal = deals.find(d => d.id === selectedDealId);
-    const client = clients.find(c => c.id === deal?.clientId);
-
-    if (deal && client) {
-      const draft = await generateProposalDraft(deal.title, client.name, deal.value);
-      setProposalContent(draft || 'Error generating draft.');
-    }
-    setDrafting(false);
-  };
+  const selectedDeal = deals.find(d => d.id === selectedDealId);
+  const selectedClient = clients.find(c => c.id === selectedDeal?.clientId);
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
@@ -51,12 +42,11 @@ const ProposalView: React.FC = () => {
             </select>
 
             <button
-              onClick={handleGenerate}
-              disabled={!selectedDealId || drafting}
+              disabled={!selectedDealId}
               className="w-full mt-6 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white rounded-xl font-bold shadow-xl shadow-indigo-500/20 transition-all active:scale-95"
             >
-              {drafting ? <ClockLoader /> : <Wand2 size={18} />}
-              {drafting ? t('drafting...') : t('ai_generate')}
+              <Wand2 size={18} />
+              {t('ai_generate')}
             </button>
           </div>
 
@@ -76,7 +66,9 @@ const ProposalView: React.FC = () => {
           <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900/50 rounded-t-3xl">
             <div className="flex items-center gap-2">
               <FileText className="text-zinc-500" size={16} />
-              <span className="text-xs font-bold text-zinc-400">PROPOSAL_DRAFT_2024.PDF</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase">
+                {selectedDeal ? `PROPOSTA_${selectedDeal.title}.PDF` : 'PROPOSTA_DRAFT.PDF'}
+              </span>
             </div>
             <div className="flex gap-2">
               <div className="w-3 h-3 rounded-full bg-zinc-800"></div>
@@ -84,13 +76,15 @@ const ProposalView: React.FC = () => {
               <div className="w-3 h-3 rounded-full bg-zinc-800"></div>
             </div>
           </div>
-          <div className="flex-1 p-12 bg-white text-zinc-900 rounded-b-3xl overflow-y-auto no-scrollbar font-serif">
-            {proposalContent ? (
-              <div className="prose prose-sm prose-zinc leading-relaxed whitespace-pre-wrap">
-                {proposalContent}
-              </div>
+          <div className="flex-1 bg-white rounded-b-3xl overflow-y-auto no-scrollbar shadow-inner">
+            {selectedDeal && selectedClient ? (
+              <CommercialProposalTemplate
+                deal={selectedDeal}
+                client={selectedClient}
+                date={new Date().toLocaleDateString('pt-BR')}
+              />
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-zinc-300 gap-4 opacity-50">
+              <div className="h-full flex flex-col items-center justify-center text-zinc-300 gap-4 opacity-50 bg-[#fafafa]">
                 <FileText size={64} strokeWidth={1} />
                 <p className="font-sans text-sm italic">{t('select_deal_to_start')}</p>
               </div>

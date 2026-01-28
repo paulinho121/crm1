@@ -11,6 +11,14 @@ interface CRMStore {
     categories: ProductCategory[];
     activeView: AppView;
     isLoading: boolean;
+    proposalCustomization: {
+        brandsImage: string;
+        bankName: string;
+        bankAgency: string;
+        bankAccount: string;
+        bankOwner: string;
+        pixKey: string;
+    };
 
     // Actions
     fetchInitialData: () => Promise<void>;
@@ -33,7 +41,8 @@ interface CRMStore {
     addCategory: (name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
 
-    setActiveView: (view: AppView) => void;
+    updateProposalCustomization: (customization: Partial<CRMStore['proposalCustomization']>) => void;
+    uploadBrandsImage: (file: File) => Promise<string | null>;
 
     // Modal States
     isClientModalOpen: boolean;
@@ -55,6 +64,14 @@ export const useStore = create<CRMStore>((set, get) => ({
     isClientModalOpen: false,
     isDealModalOpen: false,
     isProductModalOpen: false,
+    proposalCustomization: {
+        brandsImage: '/brands-placeholder.png',
+        bankName: 'BANCO ITAU',
+        bankAgency: '0366',
+        bankAccount: '71016-8',
+        bankOwner: 'Multicomercial e Importadora EIRELI',
+        pixKey: '05.502.590/0001-11'
+    },
 
     setClientModalOpen: (open) => set({ isClientModalOpen: open }),
     setDealModalOpen: (open) => set({ isDealModalOpen: open }),
@@ -350,4 +367,31 @@ export const useStore = create<CRMStore>((set, get) => ({
     },
 
     setActiveView: (activeView) => set({ activeView }),
+    updateProposalCustomization: (customization) => set((state) => ({
+        proposalCustomization: { ...state.proposalCustomization, ...customization }
+    })),
+    uploadBrandsImage: async (file: File) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `brands/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from('assets')
+            .upload(filePath, file);
+
+        if (uploadError) {
+            console.error('Error uploading image:', uploadError);
+            return null;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('assets')
+            .getPublicUrl(filePath);
+
+        set((state) => ({
+            proposalCustomization: { ...state.proposalCustomization, brandsImage: publicUrl }
+        }));
+
+        return publicUrl;
+    },
 }));
