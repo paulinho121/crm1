@@ -1,120 +1,95 @@
-
 import React from 'react';
-import { Client, Deal } from '../types';
+import { Client, ProposalItem } from '../types';
 import { useStore } from '../store';
 
 interface CommercialProposalTemplateProps {
-    deal: Deal;
+    proposalId?: string;
     client: Client;
+    items: ProposalItem[];
+    subtotal: number;
+    shipping: number;
+    total: number;
     date: string;
 }
 
-const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({ deal, client, date }) => {
+const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
+    proposalId,
+    client,
+    items,
+    subtotal,
+    shipping,
+    total,
+    date
+}) => {
     const { proposalCustomization } = useStore();
 
     return (
-        <div className="bg-white text-[9px] text-zinc-800 font-sans p-0 leading-tight">
-            {/* Header / Top Bar */}
-            <div className="text-center py-2">
-                <h1 className="text-sm font-black text-[#00A896] tracking-[0.2em] uppercase">
-                    ORDEM DE COMPRA / ORÇAMENTO
-                </h1>
+        <div id="proposal-template" className="bg-white text-[9px] text-zinc-800 font-sans p-0 leading-tight min-h-[1100px] flex flex-col">
+            {/* 1. Official Header Banner (Full Width) */}
+            <div className="w-full relative">
+                <img
+                    src="/header_banner.png"
+                    alt="Header Banner"
+                    className="w-full h-auto block"
+                    style={{ display: 'block' }}
+                />
             </div>
 
-            {/* Header Content */}
-            <div className="px-10 py-4 flex justify-between items-center bg-[#fafafa]/50 border-b border-zinc-100">
-                <div className="flex items-center gap-10">
-                    {/* Styled P/MC Logo Placeholder */}
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 flex items-center justify-center text-[#00A896]">
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14">
-                                <path d="M12,2C6.47,2,2,6.47,2,12s4.47,10,10,10s10-4.47,10-10S17.53,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z M15.59,7.41L14.17,6l-4.24,4.24l1.41,1.41L15.59,7.41z M11.34,15.76l-2.12-2.12l-1.41,1.41l3.54,3.54l6.36-6.36 l-1.41-1.41L11.34,15.76z" />
-                            </svg>
-                        </div>
-                        <img src="/logo.png" alt="MCI Logo" className="h-12 object-contain" />
-                    </div>
-
-                    {/* Contact Grid */}
-                    <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[7px] font-bold uppercase">
-                        <div className="flex flex-col">
-                            <span className="text-[#00A896]">Ceará</span>
-                            <span className="text-[#002b45]">(85) 3254-4700</span>
-                        </div>
-                        <div className="flex flex-col border-l border-zinc-200 pl-4">
-                            <span className="text-[#00A896]">Miami 🇺🇸</span>
-                            <span className="text-[#002b45]">+1 (786) 925-6661</span>
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-[#00A896]">Santa Catarina</span>
-                            <span className="text-[#002b45]">São Paulo</span>
-                        </div>
-                        <div className="flex flex-col border-l border-zinc-200 pl-4">
-                            <span className="text-zinc-400">Mapa Digital</span>
-                            <span className="text-zinc-500 tracking-tighter">Localizações Ativas</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Stylized Map Component */}
-                <div className="w-32 h-20 opacity-30 flex items-center justify-center">
-                    <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-[#002b45]">
-                        <path d="M50,40 Q80,20 120,50 T180,30" strokeDasharray="2,2" />
-                        <circle cx="60" cy="45" r="2" fill="#00A896" />
-                        <circle cx="100" cy="55" r="2" fill="#00A896" />
-                        <circle cx="140" cy="65" r="2" fill="#00A896" />
-                        <circle cx="170" cy="35" r="2" fill="#00A896" />
-                    </svg>
-                </div>
-            </div>
-
-            {/* Brands FAixa */}
-            <div className="bg-[#002b45] px-10 py-2 flex justify-between items-center">
+            {/* 2. Brands Banner (formerly the blue bar) */}
+            {/* We now use a clean white or transparent background to avoid the 'box' look */}
+            <div className="px-10 py-1 flex justify-center items-center min-h-[30px] border-b border-zinc-100">
                 {proposalCustomization.brandsImage && proposalCustomization.brandsImage !== '/brands-placeholder.png' ? (
-                    <img src={proposalCustomization.brandsImage} alt="Marcas Representadas" className="h-4 object-contain brightness-0 invert" />
+                    <img
+                        src={proposalCustomization.brandsImage}
+                        alt="Marcas Representadas"
+                        className="h-8 w-auto max-w-full object-contain"
+                    />
                 ) : (
-                    ['Aputure', 'SCREAM', 'AMARAN', 'YC ONION', 'GODOX', 'ACCSOON', 'DZOFILM', '7ARTISANS', 'DEITY', 'SWIT'].map(brand => (
-                        <span key={brand} className="text-[7px] text-zinc-100 font-black tracking-widest uppercase">{brand}</span>
-                    ))
+                    <div className="flex gap-4">
+                        {['Aputure', 'SCREAM', 'AMARAN', 'YC ONION', 'GODOX', 'ACCSOON', 'DZOFILM', '7ARTISANS', 'DEITY', 'SWIT'].map(brand => (
+                            <span key={brand} className="text-[6px] text-zinc-300 font-black tracking-widest uppercase">{brand}</span>
+                        ))}
+                    </div>
                 )}
             </div>
 
-            {/* Budget Header Meta */}
+            {/* 3. Proposal Info Bar */}
             <div className="px-10 py-3 grid grid-cols-12 bg-zinc-50 border-b border-zinc-200 text-[8px] uppercase font-bold">
-                <div className="col-span-3">Nº ORÇAMENTO: <span className="text-[#00A896] ml-1">{deal.id.slice(0, 8).toUpperCase()}</span></div>
+                <div className="col-span-3">Nº ORÇAMENTO: <span className="text-[#00A896] ml-1">{proposalId || 'DRAFT'}</span></div>
                 <div className="col-span-2">DATA: <span className="text-[#002b45] ml-1">{date}</span></div>
                 <div className="col-span-3">COMERCIAL: <span className="text-[#002b45] ml-1">PAULO FERNANDO</span></div>
                 <div className="col-span-4 text-right">E-MAIL: <span className="text-[#002b45] ml-1">paulo.fernando@mcistore.com.br</span></div>
             </div>
 
-            {/* Client Information Grid */}
+            {/* 4. Client Information */}
             <div className="px-10 py-6">
                 <div className="grid grid-cols-12 gap-px bg-zinc-200 border border-zinc-200 rounded-sm overflow-hidden">
                     <div className="col-span-8 bg-white p-3">
-                        <span className="text-[#002b45] font-black uppercase inline-block mb-1">Cliente:</span>
-                        <p className="font-bold text-zinc-600 ml-1">{client.name}</p>
+                        <span className="text-[#002b45] font-black uppercase inline-block mb-1 text-[7px]">Cliente:</span>
+                        <p className="font-bold text-zinc-600 ml-1 text-xs">{client.name}</p>
                     </div>
                     <div className="col-span-4 bg-white p-3">
-                        <span className="text-[#002b45] font-black uppercase inline-block mb-1">Contato:</span>
+                        <span className="text-[#002b45] font-black uppercase inline-block mb-1 text-[7px]">Contato / Bairro:</span>
                         <p className="font-bold text-zinc-600 ml-1">{client.neighborhood || '--'}</p>
                     </div>
 
                     <div className="col-span-6 bg-white p-3">
-                        <span className="text-[#002b45] font-black uppercase inline-block mb-1">Endereço:</span>
+                        <span className="text-[#002b45] font-black uppercase inline-block mb-1 text-[7px]">Endereço:</span>
                         <p className="font-bold text-zinc-600 ml-1">{client.address || '--'}, {client.number || '--'}</p>
                     </div>
                     <div className="col-span-3 bg-white p-3">
-                        <span className="text-[#002b45] font-black uppercase inline-block mb-1">CNPJ:</span>
+                        <span className="text-[#002b45] font-black uppercase inline-block mb-1 text-[7px]">CNPJ / CPF:</span>
                         <p className="font-bold text-zinc-600 ml-1">{client.taxId || '--'}</p>
                     </div>
                     <div className="col-span-3 bg-white p-3">
-                        <span className="text-[#002b45] font-black uppercase inline-block mb-1">E-mails:</span>
+                        <span className="text-[#002b45] font-black uppercase inline-block mb-1 text-[7px]">E-mail:</span>
                         <p className="font-bold text-zinc-600 lowercase ml-1">{client.email}</p>
                     </div>
                 </div>
             </div>
 
-            {/* Main Items Table */}
-            <div className="px-10">
+            {/* 5. Products Table */}
+            <div className="px-10 flex-1">
                 <table className="w-full border-collapse border border-zinc-200">
                     <thead>
                         <tr className="bg-[#002b45] text-white text-[7px] font-black uppercase tracking-tighter">
@@ -124,29 +99,34 @@ const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
                             <th className="p-2 border border-zinc-600 text-left w-24">MODELO</th>
                             <th className="p-2 border border-zinc-600 text-left w-16">MARCA</th>
                             <th className="p-2 border border-zinc-600 text-left">ESPECIFICAÇÕES</th>
-                            <th className="p-2 border border-zinc-600 text-right w-20">Unid.Vend.</th>
-                            <th className="p-2 border border-zinc-600 text-right w-12">Desc.</th>
+                            <th className="p-2 border border-zinc-600 text-right w-20">V.UNIT</th>
+                            <th className="p-2 border border-zinc-600 text-right w-12">DESC.</th>
                             <th className="p-2 border border-zinc-600 text-center w-12">UND</th>
                             <th className="p-2 border border-zinc-600 text-right w-24">TOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="text-[8px] font-bold hover:bg-zinc-50">
-                            <td className="p-3 border border-zinc-200 text-center text-[#00A896]">01</td>
-                            <td className="p-3 border border-zinc-200 text-zinc-400">5369</td>
-                            <td className="p-3 border border-zinc-200 text-center">01</td>
-                            <td className="p-3 border border-zinc-200 uppercase bg-zinc-50/30">{deal.title}</td>
-                            <td className="p-3 border border-zinc-200 text-zinc-400">MCI</td>
-                            <td className="p-3 border border-zinc-200 text-[7px] leading-relaxed text-zinc-500 italic">
-                                LED monolight com chipset BLAIR-CG avançado. Garantia de implementação de 1 ano e suporte técnico premium especializado.
-                            </td>
-                            <td className="p-3 border border-zinc-200 text-right">R$ {deal.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-                            <td className="p-3 border border-zinc-200 text-right text-red-500">0%</td>
-                            <td className="p-3 border border-zinc-200 text-center">UN</td>
-                            <td className="p-3 border border-zinc-200 text-right text-[#002b45] text-sm">R$ {deal.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-                        </tr>
-                        {/* Empty Space rows for formal look */}
-                        {[...Array(6)].map((_, i) => (
+                        {items && items.length > 0 ? items.map((item, index) => (
+                            <tr key={index} className="text-[8px] font-bold hover:bg-zinc-50">
+                                <td className="p-2 border border-zinc-200 text-center text-[#00A896]">{(index + 1).toString().padStart(2, '0')}</td>
+                                <td className="p-2 border border-zinc-200 text-zinc-400">{item.code}</td>
+                                <td className="p-2 border border-zinc-200 text-center">{item.quantity}</td>
+                                <td className="p-2 border border-zinc-200 uppercase bg-zinc-50/30 text-[7px]">{item.name}</td>
+                                <td className="p-2 border border-zinc-200 text-zinc-400">{item.manufacturer}</td>
+                                <td className="p-2 border border-zinc-200 text-[6px] leading-tight text-zinc-500 italic max-w-[150px]">
+                                    {item.description}
+                                </td>
+                                <td className="p-2 border border-zinc-200 text-right">R$ {item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                <td className="p-2 border border-zinc-200 text-right text-red-500">0%</td>
+                                <td className="p-2 border border-zinc-200 text-center">UN</td>
+                                <td className="p-2 border border-zinc-200 text-right text-[#002b45] text-sm">R$ {item.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                        )) : (
+                            <tr className="h-8">
+                                <td colSpan={10} className="border border-zinc-100 text-center text-zinc-300 italic">Adicione produtos para visualizar</td>
+                            </tr>
+                        )}
+                        {[...Array(Math.max(0, 5 - (items?.length || 0)))].map((_, i) => (
                             <tr key={i} className="h-8">
                                 {[...Array(10)].map((_, j) => (
                                     <td key={j} className="border border-zinc-100"></td>
@@ -157,9 +137,8 @@ const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
                 </table>
             </div>
 
-            {/* Summary and Footer */}
-            <div className="px-10 py-8 grid grid-cols-12 gap-10">
-                {/* Left Side: Payment & Observations */}
+            {/* 6. Footer: Observations and Totals */}
+            <div className="px-10 py-8 grid grid-cols-12 gap-10 mt-auto">
                 <div className="col-span-7 space-y-6">
                     <div className="grid grid-cols-2 gap-4 text-[8px]">
                         <div>
@@ -184,7 +163,7 @@ const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
 
                     <div>
                         <span className="text-[#002b45] font-black uppercase text-[8px] block mb-2">OBSERVAÇÕES:</span>
-                        <div className="h-20 border border-dotted border-zinc-300 p-3 italic text-zinc-400 text-[7px] leading-snug">
+                        <div className="h-16 border border-dotted border-zinc-300 p-3 italic text-zinc-400 text-[7px] leading-snug">
                             Válido por 5 dias. Frete não incluso.
                             Garantia de conformidade conforme termos contratuais.
                             Pagamento em 6 boletos mediante análise de crédito.
@@ -192,20 +171,19 @@ const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
                     </div>
                 </div>
 
-                {/* Right Side: Totals */}
                 <div className="col-span-5 flex flex-col items-end pt-4">
                     <div className="w-full space-y-4">
                         <div className="flex justify-between items-center text-[8px] border-b border-zinc-100 pb-2">
                             <span className="text-zinc-400 font-black uppercase tracking-widest">SUBTOTAL:</span>
-                            <span className="font-bold text-zinc-800">R$ {deal.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            <span className="font-bold text-zinc-800">R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                         <div className="flex justify-between items-center text-[8px] border-b border-zinc-100 pb-2">
                             <span className="text-zinc-400 font-black uppercase tracking-widest">FRETE:</span>
-                            <span className="font-bold text-zinc-800">R$ 0,00</span>
+                            <span className="font-bold text-zinc-800">R$ {shipping.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                         <div className="flex justify-between items-center bg-[#002b45] text-white p-4 rounded-sm shadow-lg">
                             <span className="font-black uppercase tracking-[0.2em] text-[10px]">TOTAL + FRETE:</span>
-                            <span className="text-xl font-bold italic tracking-tighter">R$ {deal.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            <span className="text-xl font-bold italic tracking-tighter">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                     </div>
 
@@ -215,8 +193,8 @@ const CommercialProposalTemplate: React.FC<CommercialProposalTemplateProps> = ({
                 </div>
             </div>
 
-            {/* Approval and Signature */}
-            <div className="px-10 pb-12 mt-4 grid grid-cols-2 gap-20">
+            {/* 7. Signature Section */}
+            <div className="px-10 pb-8 mt-4 grid grid-cols-2 gap-20">
                 <div className="text-center">
                     <div className="h-14 flex items-end justify-center">
                         <div className="w-full border-b border-zinc-400"></div>

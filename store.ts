@@ -80,6 +80,11 @@ export const useStore = create<CRMStore>((set, get) => ({
     fetchInitialData: async () => {
         set({ isLoading: true });
         try {
+            const savedCustomization = localStorage.getItem('proposal_customization');
+            if (savedCustomization) {
+                set({ proposalCustomization: JSON.parse(savedCustomization) });
+            }
+
             const [stagesRes, clientsRes, dealsRes, productsRes, categoriesRes] = await Promise.all([
                 supabase.from('pipeline_stages').select('*').order('display_order', { ascending: true }),
                 supabase.from('clients').select('*').order('created_at', { ascending: false }),
@@ -367,9 +372,11 @@ export const useStore = create<CRMStore>((set, get) => ({
     },
 
     setActiveView: (activeView) => set({ activeView }),
-    updateProposalCustomization: (customization) => set((state) => ({
-        proposalCustomization: { ...state.proposalCustomization, ...customization }
-    })),
+    updateProposalCustomization: (customization) => {
+        const newState = { ...get().proposalCustomization, ...customization };
+        set({ proposalCustomization: newState });
+        localStorage.setItem('proposal_customization', JSON.stringify(newState));
+    },
     uploadBrandsImage: async (file: File) => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -388,9 +395,9 @@ export const useStore = create<CRMStore>((set, get) => ({
             .from('assets')
             .getPublicUrl(filePath);
 
-        set((state) => ({
-            proposalCustomization: { ...state.proposalCustomization, brandsImage: publicUrl }
-        }));
+        const newState = { ...get().proposalCustomization, brandsImage: publicUrl };
+        set({ proposalCustomization: newState });
+        localStorage.setItem('proposal_customization', JSON.stringify(newState));
 
         return publicUrl;
     },

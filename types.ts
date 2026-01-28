@@ -54,14 +54,27 @@ export interface Deal {
   createdAt: string;
 }
 
+export interface ProposalItem {
+  productId: string;
+  code: string;
+  name: string;
+  description: string;
+  manufacturer: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
 export interface Proposal {
   id: string;
-  dealId: string;
+  clientId: string;
   title: string;
-  content: string;
-  value: number;
+  items: ProposalItem[];
+  subtotal: number;
+  shipping: number;
+  total: number;
   status: 'Draft' | 'Sent' | 'Accepted' | 'Rejected';
-  signed: boolean;
+  createdAt: string;
 }
 
 export interface Product {

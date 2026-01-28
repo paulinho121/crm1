@@ -13,7 +13,8 @@ import {
   useSensors,
   DragStartEvent,
   DragOverEvent,
-  DragEndEvent
+  DragEndEvent,
+  useDroppable
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -79,6 +80,29 @@ const SortableDealCard = ({ deal, clientName }: { deal: Deal, clientName: string
           {deal.probability}% {t('prob')}
         </div>
       </div>
+    </div>
+  );
+};
+
+const DroppableStage = ({ stage, stageDeals, getClientName, openAddModal, t }: any) => {
+  const { setNodeRef } = useDroppable({
+    id: stage.id,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      className="flex-1 bg-zinc-900/30 border border-zinc-900 rounded-2xl p-3 space-y-4 overflow-y-auto no-scrollbar group-hover:bg-zinc-900/50 transition-colors min-h-[150px]"
+    >
+      {stageDeals.map((deal: any) => (
+        <SortableDealCard key={deal.id} deal={deal} clientName={getClientName(deal.clientId)} />
+      ))}
+      <button
+        onClick={() => openAddModal(stage.id)}
+        className="w-full py-2.5 border border-dashed border-zinc-800 hover:border-zinc-600 rounded-xl text-xs font-medium text-zinc-600 hover:text-zinc-400 transition-all flex items-center justify-center gap-2"
+      >
+        <Plus size={14} /> {t('add_opportunity')}
+      </button>
     </div>
   );
 };
@@ -212,20 +236,13 @@ const PipelineView: React.FC = () => {
                   items={stageDeals.map(d => d.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div
-                    id={stage.id}
-                    className="flex-1 bg-zinc-900/30 border border-zinc-900 rounded-2xl p-3 space-y-4 overflow-y-auto no-scrollbar group-hover:bg-zinc-900/50 transition-colors min-h-[150px]"
-                  >
-                    {stageDeals.map(deal => (
-                      <SortableDealCard key={deal.id} deal={deal} clientName={getClientName(deal.clientId)} />
-                    ))}
-                    <button
-                      onClick={() => openAddModal(stage.id)}
-                      className="w-full py-2.5 border border-dashed border-zinc-800 hover:border-zinc-600 rounded-xl text-xs font-medium text-zinc-600 hover:text-zinc-400 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Plus size={14} /> {t('add_opportunity')}
-                    </button>
-                  </div>
+                  <DroppableStage
+                    stage={stage}
+                    stageDeals={stageDeals}
+                    getClientName={getClientName}
+                    openAddModal={openAddModal}
+                    t={t}
+                  />
                 </SortableContext>
               </div>
             );

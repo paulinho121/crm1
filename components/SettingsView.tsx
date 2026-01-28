@@ -264,8 +264,11 @@ const SettingsView: React.FC = () => {
             >
                 <div className="bg-white rounded-xl overflow-hidden shadow-2xl max-h-[80vh] overflow-y-auto no-scrollbar border border-zinc-200">
                     <CommercialProposalTemplate
-                        deal={previewDeal as any}
                         client={previewClient as any}
+                        items={[]}
+                        subtotal={previewDeal.value}
+                        shipping={0}
+                        total={previewDeal.value}
                         date={new Date().toLocaleDateString('pt-BR')}
                     />
                 </div>
